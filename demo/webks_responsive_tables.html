@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head>
+<title>webks: Responsive jQuery Tables - Demo by webks: websolutions kept simple</title>
+<meta charset="UTF-8">
+<!-- Just example CSS - not required! -->
+<link rel="stylesheet" href="webks_responsive_tables.css" type="text/css" media="screen" />
+<!-- jQuery library (require) -->
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<!-- jQuery Plugin webks: Responsive jQuery Tables (required) -->
+<script type="text/javascript" src="../jquery.webks-responsive-table.js"></script>
+<script type="text/javascript">
+  $(function() {
+    $('body').addClass('javascript-active');
+
+    // ==================================================================================
+    //Call responsive table function (That's all you need!)
+    $('table.respond').responsiveTable({
+      // Configuration example:
+      displayResponsiveCallback : function() {
+        return $(document).width() < 700; // Show responsive if screen width < 500px
+      },
+    });
+    // ==================================================================================
+
+    // -- Further possibilities for automatic switch after page has been loaded --
+    // Update on Orientation Change!	  
+    $(window).bind("orientationchange", function(e) {
+      setTimeout("$('table.respond').responsiveTableUpdate()", 100);
+    });
+
+    // Update on Window Resize! (May be buggy in some browsers, sorry.)
+    $(window).resize(function() {
+      $('table.respond').responsiveTableUpdate();
+    });
+  });
+</script>
+</head>
+<body>
+	<header>
+		<h1>webks: Responsive jQuery Tables - Demo</h1>
+		<p>
+			Size your browser window down to <strong>&lt;= 700pixels</strong> (and hit reload if JS window resize event does not
+			work in your browser).<br /> The function also fires on <strong>orientation change</strong> on mobile devices.
+		</p>
+		<p>
+			<em>Hint: Have a look at the several configuration options and try them out in this demo!</em>
+		</p>
+	</header>
+	<section>
+		<table class="respond">
+			<thead>
+				<tr>
+					<th>thead1</th>
+					<th>thead2</th>
+					<th>thead3</th>
+					<th>thead4</th>
+					<th>thead5</th>
+					<th>thead6</th>
+					<th>thead7</th>
+					<th>thead8</th>
+					<th>thead9</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>row1 cell1</td>
+					<td>row1 cell2</td>
+					<td>row1 cell3</td>
+					<td>row1 cell4</td>
+					<td>row1 cell5</td>
+					<td>row1 cell6</td>
+					<td>row1 cell7</td>
+					<td>row1 cell8</td>
+					<td>row1 cell9</td>
+				</tr>
+				<tr>
+					<td>row2 cell1</td>
+					<td>row2 cell2</td>
+					<td>row2 cell3</td>
+					<td>row2 cell4</td>
+					<td>row2 cell5</td>
+					<td>row2 cell6</td>
+					<td>row2 cell7</td>
+					<td>row2 cell8</td>
+					<td>row2 cell9</td>
+				</tr>
+				<tr>
+					<td>row3 cell1</td>
+					<td>row3 cell2</td>
+					<td>row3 cell3</td>
+					<td>row3 cell4</td>
+					<td>row3 cell5</td>
+					<td>row3 cell6</td>
+					<td>row3 cell7</td>
+					<td>row3 cell8</td>
+					<td>row3 cell9</td>
+				</tr>
+			</tbody>
+		</table>
+		<h2>This plugin was inspired by:</h2>
+		<ul>
+			<li><a href="http://mobifreaks.com/coding/responsive-data-tables-jquery/">http://mobifreaks.com/coding/responsive-data-tables-jquery/</a></li>
+			<li><a href="http://mobifreaks.com/user-interface/responsive-and-seo-friendly-data-tables/">http://mobifreaks.com/user-interface/responsive-and-seo-friendly-data-tables/</a></li>
+			<li><a href="http://css-tricks.com/responsive-data-tables/">http://css-tricks.com/responsive-data-tables/</a></li>
+		</ul>
+	</section>
+	<footer>
+		<p>
+		<h3>If you like it:</h3>
+		<ul>
+			<li>become a fan of <a href="https://www.facebook.com/webksde" title="https://www.facebook.com/webksde"
+				class="ext" target="_blank">https://www.facebook.com/webksde</a><span class="ext"></span> on facebook
+			</li>
+			<li>follow us on twitter: <a href="https://twitter.com/#!/webksde" class="ext" target="_blank">https://twitter.com/#!/webksde</a></li>
+			<li>or visit our website(s):
+				<ul>
+					<li><a href="http://www.webks.de" title="http://www.webks.de" class="ext" target="_blank">http://www.webks.de</a>
+						(webks: websolutions kept simple)</li>
+					<li><a href="http://www.DROWL.de" title="http://www.DROWL.de">http://www.DROWL.de</a> (DROWL Drupal CMS
+						Experts)</li>
+				</ul>
+			</li>
+		</ul>
+		<br /> <br /> <strong>Thanks a lot!</strong>
+		</p>
+	</footer>
+</body>
+</html>

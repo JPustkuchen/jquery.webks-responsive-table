@@ -1,0 +1,29 @@
+/* Feel free to modify all of these styles */
+
+body{ font-family:arial, verdana; padding:15px; }
+
+/* Table */
+table.respond{ width:100%; }
+table.respond th{ background:black; color:white; font-style:italic; font-weight:bold; }
+table.respond td{ padding:3px 1%; }
+table.respond tr:nth-of-type(odd){ background:#ededed; }
+
+/* Responsive Data-List */
+.webks-responsive-table dt,
+.webks-responsive-table dd{
+	display:inline-block; /* instead use floats */
+	width:73%;
+	margin:0 0 1px 0;
+	padding:5px 1%;
+}
+.webks-responsive-table dt{ 
+	width:23%; 
+	text-align:right; 
+	background:black; 
+	color:white; 
+	font-style:italic;
+	font-weight:bold;
+	vertical-align:top;
+}
+.webks-responsive-table dl dd:nth-of-type(odd){ background:#ededed; }
+.webks-responsive-table dl dt:nth-of-type(even){ background:#1c1c1c; }
