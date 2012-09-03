@@ -184,6 +184,11 @@
           }
           dd.addClass('value col-' + ii);
           dd.html($(this).html());
+          // Set empty class if value is empty.
+          if($(this).html().trim() == ''){
+            dd.addClass('empty');
+            dt.addClass('empty');
+          }
           row.append(dt).append(dd);
         });
         result.append(row);
