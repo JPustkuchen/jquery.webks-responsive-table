@@ -53,7 +53,9 @@
    * structure is compliant.
    */
   $.fn.responsiveTable = function(options) {
-    return $(this).responsiveTableInit(options);
+    return $(this).each(function(){
+      $(this).responsiveTableInit(options);
+    });
   };
 
   /**
@@ -202,7 +204,7 @@
         if (settings.showSwitch) {
           var switchBtn = $('<a>');
           switchBtn.html(settings.switchTitle);
-          switchBtn.addClass('switchBtn');
+          switchBtn.addClass('switchBtn btn');
           switchBtn.attr('href', '#');
 
           $('div.webks-responsive-table a.switchBtn').live('click',
