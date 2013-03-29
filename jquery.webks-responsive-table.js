@@ -187,7 +187,7 @@
           dd.addClass('value col-' + ii);
           dd.html($(this).html());
           // Set empty class if value is empty.
-          if($(this).html().trim() == ''){
+          if ($.trim($(this).html()) == '') {
             dd.addClass('empty');
             dt.addClass('empty');
           }
