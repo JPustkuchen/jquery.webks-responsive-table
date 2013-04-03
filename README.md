@@ -19,3 +19,6 @@ jQuery "webks Responsive Table" Plugin transforms less mobile compliant default 
 Furthermore it provides some nice configuration options to optimize it for your custom needs.
 
 * **Full documentation & Demo**: [http://julian.pustkuchen.com/projekte/jquery-webks-responsive-table-plugin]
+
+## Related Projects
+* Similar Drupal CMS Project (Module): https://drupal.org/project/jquery_wrt
