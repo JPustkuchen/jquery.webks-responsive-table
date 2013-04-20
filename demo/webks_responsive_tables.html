@@ -33,6 +33,13 @@
     $(window).resize(function() {
       $('table.respond').responsiveTableUpdate();
     });
+    
+    // Load data dynamicaly
+    $("#dynamicContent").click( function() {
+        $("table.respond tbody").load("webks_responsive_tables_data.html", function() {
+            $('table.respond').responsiveTableRefresh();
+        });
+    }) 
   });
 </script>
 </head>
@@ -98,6 +105,7 @@
 				</tr>
 			</tbody>
 		</table>
+		<button id="dynamicContent">Load content</button>
 		<h2>This plugin was inspired by:</h2>
 		<ul>
 			<li><a href="http://mobifreaks.com/coding/responsive-data-tables-jquery/">http://mobifreaks.com/coding/responsive-data-tables-jquery/</a></li>
@@ -125,5 +133,6 @@
 		<br /> <br /> <strong>Thanks a lot!</strong>
 		</p>
 	</footer>
+	
 </body>
 </html>

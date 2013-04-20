@@ -154,47 +154,8 @@
       if (settings.preserveClasses) {
         result.addClass($this.attr('class'));
       }
-
-      // Head
-      // Iterate head - extract titles
-      var titles = new Array();
-      $this.find(settings.headerSelector).each(function(i, e) {
-        var title = $(this).html();
-        titles[i] = title;
-      });
-
-      // Body
-      // Iterate body
-      $this.find(settings.bodyRowSelector).each(function(i, e) {
-        // Row
-        var row = $(settings.responsiveRowElement);
-        row.addClass('row row-' + i);
-        if (settings.preserveClasses) {
-          row.addClass($(this).attr('class'));
-        }
-        // Column
-        $(this).children('td').each(function(ii, ee) {
-          var dt = $(settings.responsiveColumnTitleElement);
-          if (settings.preserveClasses) {
-            dt.addClass($(this).attr('class'));
-          }
-          dt.addClass('title col-' + ii);
-          dt.html(titles[ii]);
-          var dd = $(settings.responsiveColumnValueElement);
-          if (settings.preserveClasses) {
-            dd.addClass($(this).attr('class'));
-          }
-          dd.addClass('value col-' + ii);
-          dd.html($(this).html());
-          // Set empty class if value is empty.
-          if ($.trim($(this).html()) == '') {
-            dd.addClass('empty');
-            dt.addClass('empty');
-          }
-          row.append(dt).append(dd);
-        });
-        result.append(row);
-      });
+      
+      $this._buildResponsiveTable($this, settings, result)
 
       // Display responsive version after table.
       $this.after(result);
@@ -236,6 +197,22 @@
       }
     });
   };
+  
+  /**
+   * Refresh the responsive table the data from the table.
+   * Useful if the table changes after it was initialized
+   */
+  $.fn.responsiveTableRefresh = function() {
+    return this.each(function() {
+      var $this = $(this);
+      var responsiveTable = $this.data('webks-responsive-table');
+      var settings = responsiveTable.data('settings');
+
+      responsiveTable.empty();
+      $this._buildResponsiveTable($this, settings, responsiveTable);
+    });
+  }
+  
   /**
    * Re-Check the .displayResponsiveCallback() and display table according to
    * its result. Only available if settings.dynamic is true.
@@ -311,6 +288,54 @@
       }
     });
   };
+
+  /**
+   * Extract information from table to build responsive table.
+   */
+  $.fn._buildResponsiveTable = function($this, settings, result) {
+    // Head
+    // Iterate head - extract titles
+    var titles = new Array();
+    $this.find(settings.headerSelector).each(function(i, e) {
+      var title = $(this).html();
+      titles[i] = title;
+    });
+
+    // Body
+    // Iterate body
+    $this.find(settings.bodyRowSelector).each(function(i, e) {
+      // Row
+      var row = $(settings.responsiveRowElement);
+      row.addClass('row row-' + i);
+      if (settings.preserveClasses) {
+        row.addClass($(this).attr('class'));
+      }
+      // Column
+      $(this).children('td').each(function(ii, ee) {
+        var dt = $(settings.responsiveColumnTitleElement);
+        if (settings.preserveClasses) {
+          dt.addClass($(this).attr('class'));
+        }
+        dt.addClass('title col-' + ii);
+        dt.html(titles[ii]);
+        var dd = $(settings.responsiveColumnValueElement);
+        if (settings.preserveClasses) {
+          dd.addClass($(this).attr('class'));
+        }
+        dd.addClass('value col-' + ii);
+        dd.html($(this).html());
+        // Set empty class if value is empty.
+        if ($.trim($(this).html()) == '') {
+          dd.addClass('empty');
+          dt.addClass('empty');
+        }
+        row.append(dt).append(dd);
+      });
+      result.append(row);
+    });
+    
+    return result;
+  }
 
   /**
    * Checks the general preconditions for elements that this Plugin is being
