@@ -148,15 +148,14 @@
           // Further + what shell we do with the processed table now?
           if (settings.dynamic) {
             if (settings.showSwitch) {
-              throw 'ShowSwitch functionality is not migrated yet.'
               var switchBtn = $('<a>');
               switchBtn.html(settings.switchTitle);
               switchBtn.addClass('switchBtn');
               switchBtn.attr('href', '#');
 
-              $('div.webks-responsive-table a.switchBtn').live('click',
+              switchBtn.click(
                   function(e) {
-                    $this.responsiveTableShowTable();
+                    methods.showTable.call($([$this]));
                     e.preventDefault();
                     return false;
                   });
