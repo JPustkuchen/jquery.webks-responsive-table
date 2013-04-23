@@ -151,7 +151,7 @@
               throw 'ShowSwitch functionality is not migrated yet.'
               var switchBtn = $('<a>');
               switchBtn.html(settings.switchTitle);
-              switchBtn.addClass('switchBtn btn');
+              switchBtn.addClass('switchBtn');
               switchBtn.attr('href', '#');
 
               $('div.webks-responsive-table a.switchBtn').live('click',
