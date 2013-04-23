@@ -17,6 +17,7 @@
     //Call responsive table function (That's all you need!)
     $('table.respond').responsiveTable({
       // Configuration example:
+      showSwitch: false,
       displayResponsiveCallback : function() {
         return $(document).width() < 700; // Show responsive if screen width < 500px
       }
@@ -26,18 +27,18 @@
     // -- Further possibilities for automatic switch after page has been loaded --
     // Update on Orientation Change!	  
     $(window).bind("orientationchange", function(e) {
-      setTimeout("$('table.respond').responsiveTableUpdate()", 100);
+      setTimeout("$('table.respond').responsiveTable('update')", 100);
     });
 
     // Update on Window Resize! (May be buggy in some browsers, sorry.)
     $(window).resize(function() {
-      $('table.respond').responsiveTableUpdate();
+      $('table.respond').responsiveTable('update');
     });
     
     // Load data dynamicaly
     $("#dynamicContent").click( function() {
         $("table.respond tbody").load("webks_responsive_tables_data.html", function() {
-            $('table.respond').responsiveTableRefresh();
+            $('table.respond').responsiveTable('refresh');
         });
     }) 
   });
