@@ -164,9 +164,8 @@
             }
 
             // Connect result to table
-            var data = { responsive: result, table: $this, settings: settings }
+            var data = { responsive: result, settings: settings }
             $this.data('responsiveTable', data);
-            result.data('responsiveTable', data);
 
             // Hide table. We might need it again!
             $this.hide();
