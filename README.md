@@ -12,6 +12,7 @@ Copyright Julian Pustkuchen & Thomas Frobieter GbR (webks: websolutions kept sim
 ## Requirements
 
 * jQuery v1.3+
+* INFO: The CSS File "jquery.webks-responsive-table.css" is NOT REQUIRED but can be used as a well styled starting point for responsive tables. Another alternative can be found in the "demo" folder.
 
 ## Description & further information
 
