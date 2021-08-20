@@ -1,4 +1,4 @@
-# jQuery Plugin webks: Responsive Tables
+# DEPRECATED: jQuery Plugin webks: Responsive Tables
 
 ## Unmaintained / discontinued
 
