@@ -1,5 +1,9 @@
 # jQuery Plugin webks: Responsive Tables
 
+## Unmaintained / discontinued
+
+We don't use and maintain this repository anymore as the used techniques are better solved with modern technologies and libraries.
+
 ## License
 
 Dual licensed under the MIT and GPL licenses:
