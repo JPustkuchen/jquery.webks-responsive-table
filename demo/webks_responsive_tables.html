@@ -26,13 +26,20 @@
     // -- Further possibilities for automatic switch after page has been loaded --
     // Update on Orientation Change!	  
     $(window).bind("orientationchange", function(e) {
-      setTimeout("$('table.respond').responsiveTableUpdate()", 100);
+      setTimeout("$('table.respond').responsiveTable('update')", 100);
     });
 
     // Update on Window Resize! (May be buggy in some browsers, sorry.)
     $(window).resize(function() {
-      $('table.respond').responsiveTableUpdate();
+      $('table.respond').responsiveTable('update');
     });
+    
+    // Load data dynamicaly
+    $("#dynamicContent").click( function() {
+        $("table.respond tbody").load("webks_responsive_tables_data.html", function() {
+            $('table.respond').responsiveTable('refresh');
+        });
+    }) 
   });
 </script>
 </head>
@@ -98,6 +105,60 @@
 				</tr>
 			</tbody>
 		</table>
+		<button id="dynamicContent">Load content</button>
+		
+		<h2>Works with multiple tables on the same page!</h2>
+		<table class="respond">
+			<thead>
+				<tr>
+					<th>second head1</th>
+					<th>second head2</th>
+					<th>second head3</th>
+					<th>second head4</th>
+					<th>second head5</th>
+					<th>second head6</th>
+					<th>second head7</th>
+					<th>second head8</th>
+					<th>second head9</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>second row1 cell1</td>
+					<td>second row1 cell2</td>
+					<td>second row1 cell3</td>
+					<td>second row1 cell4</td>
+					<td>second row1 cell5</td>
+					<td>second row1 cell6</td>
+					<td>second row1 cell7</td>
+					<td>second row1 cell8</td>
+					<td>second row1 cell9</td>
+				</tr>
+				<tr>
+					<td>second row2 cell1</td>
+					<td>second row2 cell2</td>
+					<td>second row2 cell3</td>
+					<td>second row2 cell4</td>
+					<td>second row2 cell5</td>
+					<td>second row2 cell6</td>
+					<td>second row2 cell7</td>
+					<td>second row2 cell8</td>
+					<td>second row2 cell9</td>
+				</tr>
+				<tr>
+					<td>second row3 cell1</td>
+					<td>second row3 cell2</td>
+					<td>second row3 cell3</td>
+					<td>second row3 cell4</td>
+					<td>second row3 cell5</td>
+					<td>second row3 cell6</td>
+					<td>second row3 cell7</td>
+					<td>second row3 cell8</td>
+					<td>second row3 cell9</td>
+				</tr>
+			</tbody>
+		</table>
+		
 		<h2>This plugin was inspired by:</h2>
 		<ul>
 			<li><a href="http://mobifreaks.com/coding/responsive-data-tables-jquery/">http://mobifreaks.com/coding/responsive-data-tables-jquery/</a></li>
@@ -125,5 +186,6 @@
 		<br /> <br /> <strong>Thanks a lot!</strong>
 		</p>
 	</footer>
+	
 </body>
 </html>

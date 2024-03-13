@@ -52,108 +52,255 @@
    * Please ensure that the settings match your requirements and your table
    * structure is compliant.
    */
-  $.fn.responsiveTable = function(options) {
-    return $(this).each(function(){
-      $(this).responsiveTableInit(options);
-    });
-  };
+  $.fn.responsiveTable = function(method) {
 
-  /**
-   * Initializes the responsive tables. Expects to be executed on DOM table
-   * elements only. These are being transformed into responsive tables like
-   * configured.
-   * 
-   * @param options
-   *            Optional JSON list of settings.
-   */
-  $.fn.responsiveTableInit = function(options) {
-    var settings = $.extend({
-      /**
-       * Keep table components classes as far as possible for the responsive
-       * output.
-       */
-      preserveClasses : true,
-      /**
-       * true: Toggle table style if settings.dynamicSwitch() returns true.
-       * false: Only convert to mobile (one way)
-       */
-      dynamic : true,
-      /**
-       * (Only used if dynamic!) If this function returns true, the responsive
-       * version is shown, else displays the default table. Might be used to set
-       * a switch based on orientation, screen size, ... for dynamic switching!
-       * 
-       * @return boolean
-       */
-      displayResponsiveCallback : function() {
-        return $(document).width() < 960;
+    var methods = {
+      init: function(options) {
+        var settings = $.extend({    
+          /**
+           * Keep table components classes as far as possible for the responsive
+           * output.
+           */
+          preserveClasses : true,
+          
+          /**
+           * true: Toggle table style if settings.dynamicSwitch() returns true.
+           * false: Only convert to mobile (one way)
+           */
+          dynamic : true,
+          
+          /**
+           * (Only used if dynamic!) If this function returns true, the responsive
+           * version is shown, else displays the default table. Might be used to set
+           * a switch based on orientation, screen size, ... for dynamic switching!
+           * 
+           * @return boolean
+           */
+          displayResponsiveCallback : function() {
+            return $(document).width() < 960;
+          },
+          
+          /**
+           * (Only used if dynamic!) Display a link to switch back from responsive
+           * version to original table version.
+           */
+          showSwitch : true,
+          
+          /**
+           * (Only used if showSwitch: true!) The title of the switch link.
+           */
+          switchTitle : 'Switch to default table view.',
+          
+          /**
+           * The header columns selector.
+           * Default: 'thead td, thead th';
+           * other examples: 'tr th', ...
+           */
+          headerSelector : 'thead td, thead th',
+          
+          /**
+           * The body rows selector.
+           * Default: 'tbody tr';
+           * Other examples: 'tr', ...
+           */
+          bodyRowSelector : 'tbody tr',
+          
+          // Elements
+          /**
+           * The responsive rows container
+           * element. 
+           * Default: '<dl></dl>';
+           * Other examples: '<ul></ul>'.
+           */
+          responsiveRowElement : '<dl></dl>',
+          
+          /**
+           * The responsive column title
+           * container element.
+           * Default: '<dt></dt>'; 
+           * Other examples: '<li></li>'.
+           */
+          responsiveColumnTitleElement : '<dt></dt>',
+          
+          /**
+           * The responsive column value container element. 
+           * Default: '<dd></dd>'; 
+           * Other examples: '<li></li>'.
+           */
+          responsiveColumnValueElement : '<dd></dd>'
+        }, options);
+        
+        return this.each(function() {
+          var $this = $(this);
+          var data = $this.data("responsiveTable");
+          
+          _checkElement.call(this, false);
+          
+          // General
+          var result = $('<div></div>').addClass('webks-responsive-table').hide();
+          if (settings.preserveClasses) result.addClass($this.attr('class'));
+          
+          _buildResponsiveTable.call(this, settings, result)
+          
+          // Display responsive version after table.
+          $this.after(result);
+
+          // Further + what shell we do with the processed table now?
+          if (settings.dynamic) {
+            if (settings.showSwitch) {
+              var switchBtn = $('<a>');
+              switchBtn.html(settings.switchTitle);
+              switchBtn.addClass('switchBtn');
+              switchBtn.attr('href', '#');
+
+              switchBtn.click(
+                  function(e) {
+                    methods.showTable.call($([$this]));
+                    e.preventDefault();
+                    return false;
+                  });
+              result.prepend(switchBtn);
+            }
+
+            // Connect result to table
+            var data = { responsive: result, settings: settings }
+            $this.data('responsiveTable', data);
+
+            // Hide table. We might need it again!
+            $this.hide();
+
+            // Run check to display right display version (table or responsive)
+            methods.update.call($([this]));
+            
+          } else {
+            // Remove table entirely.
+            $this.remove();
+          }
+        })
       },
-      /**
-       * (Only used if dynamic!) Display a link to switch back from responsive
-       * version to original table version.
-       */
-      showSwitch : true,
-      /**
-       * (Only used if showSwitch: true!) The title of the switch link.
-       */
-      switchTitle : 'Switch to default table view.',
       
-      // Selectors
       /**
-       * The header columns selector.
-       * Default: 'thead td, thead th';
-       * other examples: 'tr th', ...
+       * Refresh the responsive table the data from the table.
+       * Useful if the table changes after it was initialized
        */
-      headerSelector : 'thead td, thead th',
-      /**
-       * The body rows selector.
-       * Default: 'tbody tr';
-       * Other examples: 'tr', ...
-       */
-      bodyRowSelector : 'tbody tr',
-      
-      // Elements
-      /**
-       * The responsive rows container
-       * element. 
-       * Default: '<dl></dl>';
-       * Other examples: '<ul></ul>'.
-       */
-      responsiveRowElement : '<dl></dl>',
-      /**
-       * The responsive column title
-       * container element.
-       * Default: '<dt></dt>'; 
-       * Other examples: '<li></li>'.
-       */
-      responsiveColumnTitleElement : '<dt></dt>',
-      /**
-       * The responsive column value container element. 
-       * Default: '<dd></dd>'; 
-       * Other examples: '<li></li>'.
-       */
-      responsiveColumnValueElement : '<dd></dd>'
-    }, options);
+      refresh: function() {
+        return this.each(function() {
+          _checkElement.call(this, true);
+          
+          var $this = $(this);
+          var data = $this.data('responsiveTable');
 
-    return this.each(function() {
-      // $this = The table (each).
+          data.responsive.empty();
+          _buildResponsiveTable.call($this, data.settings, data.responsive);
+        });
+      },
+      
+      /**
+       * Re-Check the .displayResponsiveCallback() and display table according to
+       * its result. Only available if settings.dynamic is true.
+       * 
+       * May be called on Window resize, Orientation Change, ... Must be executed on
+       * already processed DOM table elements.
+       */
+      update: function() {
+        return this.each(function() {
+          var $this = $(this);
+
+          // Ensure that the element this is being executed on must be a table!
+          _checkElement.call(this, true);
+          var data = $this.data('responsiveTable');
+          
+          // Original code did nothing if dynamic == false. But it should be impossible.          
+          if(data.settings.dynamic == false) throw "How could you could update in a not dynamic table. Impossible"
+          
+          if (!data.settings.displayResponsiveCallback()) {
+            methods.showTable.call($([this]))
+          }
+          else {
+            methods.showResponsive.call($([this]))
+          }
+        });
+      },
+          
+      /**
+       * Displays the default table style and hides the responsive layout.
+       * 
+       * Only available if settings.dynamic is true. Does nothing if the current
+       * display is already as wished.
+       */
+      showTable: function() {
+        return this.each(function() {
+          var $this = $(this);
+          
+          // Ensure that the element this is being executed on must be a table!
+          _checkElement.call(this, true);
+          var data = $this.data('responsiveTable');
+
+          $this.show();
+          data.responsive.hide();
+        });
+      },
+      
+      /**
+       * Displays the responsive style and hides the default table layout.
+       * 
+       * Only available if settings.dynamic is true. Does nothing if the current
+       * display is already as wished.
+       */
+      showResponsive: function() {
+        return this.each(function() {
+          var $this = $(this);
+          
+          // Ensure that the element this is being executed on must be a table!
+          _checkElement.call(this, true);
+          var data = $this.data('responsiveTable');
+
+          $this.hide();
+          data.responsive.show();
+        });
+      }
+    }
+    
+    //
+    // PRIVATE FUNCTIONS
+    //
+    
+    /**
+     * Checks the general preconditions for elements that this Plugin is being
+     * executed on.
+     *
+     * It is expected that this is the table being check.
+     * 
+     * @throws Exception if the given DOM element is not a table.
+     * @throws Exception if a helper method is directly called on a not yet initialized
+     *             table.
+     */
+    function _checkElement(checkProcessed) {
+      if (checkProcessed === undefined) {
+        checkProcessed = true;
+      }
+      
       var $this = $(this);
-
-      // Ensure that the element this is being executed on a table!
-      $this._responsiveTableCheckElement(false);
-
-      if ($this.data('webks-responsive-table-processed')) {
-        // Only update if already processed.
-        $this.responsiveTableUpdate();
-        return true;
+      if (!$this.is('table')) {
+        throw 'The selected DOM element may only be a table!';
+      }    
+      
+      if (checkProcessed) {
+        var data = $this.data('responsiveTable')
+        if ( data === undefined ) {
+          throw 'The selected DOM element has to be initialized by webks-responsive-table first.';
+        }
       }
-
-      // General
-      var result = $('<div></div>');
-      result.addClass('webks-responsive-table');
-      if (settings.preserveClasses) {
-        result.addClass($this.attr('class'));
-      }
+      
+      return $this;
+    };
+    
+    /**
+     * Extract information from table to build responsive table.
+     * It is expected that this is the table
+     */
+    function _buildResponsiveTable(settings, result) {
+      var $this = $(this)
 
       // Head
       // Iterate head - extract titles
@@ -195,146 +342,19 @@
         });
         result.append(row);
       });
-
-      // Display responsive version after table.
-      $this.after(result);
-
-      // Further + what shell we do with the processed table now?
-      if (settings.dynamic) {
-        if (settings.showSwitch) {
-          var switchBtn = $('<a>');
-          switchBtn.html(settings.switchTitle);
-          switchBtn.addClass('switchBtn btn');
-          switchBtn.attr('href', '#');
-
-          $('div.webks-responsive-table a.switchBtn').live('click',
-              function(e) {
-                $this.responsiveTableShowTable();
-                e.preventDefault();
-                return false;
-              });
-          result.prepend(switchBtn);
-        }
-
-        // Connect result to table
-        $this.data('webks-responsive-table', result);
-        $this.data('webks-responsive-table-processed', true);
-
-        // Connect table to result.
-        result.data('table', $this);
-        result.data('settings', settings);
-        $this.data('webks-responsive-table-processed', true);
-
-        // Hide table. We might need it again!
-        $this.hide();
-
-        // Run check to display right display version (table or responsive)
-        $this.responsiveTableUpdate();
-      } else {
-        // Remove table entirely.
-        $this.remove();
-      }
-    });
-  };
-  /**
-   * Re-Check the .displayResponsiveCallback() and display table according to
-   * its result. Only available if settings.dynamic is true.
-   * 
-   * May be called on Window resize, Orientation Change, ... Must be executed on
-   * already processed DOM table elements.
-   */
-  $.fn.responsiveTableUpdate = function() {
-    return this.each(function() {
-      // $this = The table (each).
-      var $this = $(this);
-
-      // Ensure that the element this is being executed on must be a table!
-      $this._responsiveTableCheckElement(true);
-
-      var responsiveTable = $this.data('webks-responsive-table');
-      if (responsiveTable != undefined) {
-        var settings = responsiveTable.data('settings');
-        if (settings != undefined) {
-          // Check preconditions!
-          if (settings.dynamic) {
-            // Is dynamic!
-            if (!settings.displayResponsiveCallback()) {
-              // NOT matching defined responsive conditions!
-              // Show original table and skip!
-              $this.responsiveTableShowTable();
-            } else {
-              $this.responsiveTableShowResponsive();
-            }
-          }
-        }
-      }
-    });
-  };
-  /**
-   * Displays the default table style and hides the responsive layout.
-   * 
-   * Only available if settings.dynamic is true. Does nothing if the current
-   * display is already as wished.
-   */
-  $.fn.responsiveTableShowTable = function() {
-    return this.each(function() {
-      // $this = The table (each).
-      var $this = $(this);
-      // Ensure that the element this is being executed on must be a table!
-      $this._responsiveTableCheckElement(true);
-
-      var responsiveTable = $this.data('webks-responsive-table');
-      if (responsiveTable.length > 0) {
-        $this.show();
-        responsiveTable.hide();
-      }
-    });
-  };
-
-  /**
-   * Displays the responsive style and hides the default table layout.
-   * 
-   * Only available if settings.dynamic is true. Does nothing if the current
-   * display is already as wished.
-   */
-  $.fn.responsiveTableShowResponsive = function() {
-    return this.each(function() {
-      // $this = The table (each).
-      var $this = $(this);
-      // Ensure that the element this is being executed on must be a table!
-      $this._responsiveTableCheckElement();
-
-      var responsiveTable = $this.data('webks-responsive-table');
-      if (responsiveTable.length > 0) {
-        $this.hide();
-        responsiveTable.show();
-      }
-    });
-  };
-
-  /**
-   * Checks the general preconditions for elements that this Plugin is being
-   * executed on.
-   * 
-   * @throws Exception
-   *             if the given DOM element is not a table.
-   * @throws Exception
-   *             if a helper method is directly called on a not yet initialized
-   *             table.
-   */
-  $.fn._responsiveTableCheckElement = function(checkProcessed) {
-    if (checkProcessed === undefined) {
-      checkProcessed = true;
+      
+      return result;
     }
-    var $this = $(this);
-    if (!$this.is('table')) {
-      throw 'The selected DOM element may only be a table!';
+        
+    
+    // Method calling logic
+    if ( methods[method] ) {
+      return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
+    } else if ( typeof method === 'object' || ! method ) {
+      return methods.init.apply( this, arguments );
+    } else {
+      $.error( 'Method ' +  method + ' does not exist on jQuery.tooltip' );
     }    
-    if (checkProcessed
-        && ($this.data('webks-responsive-table-processed') === undefined || !$this
-            .data('webks-responsive-table-processed'))) {
-      throw 'The selected DOM element has to be initialized by webks-responsive-table first.';
-    }
-    return $this;
+    
   };
 })(jQuery);
